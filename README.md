@@ -1,3 +1,11 @@
 # Launcher3
-导入Android O版本的Launcher3到Android studio，可以直接导入studio研究源码。
-后续我将研究此版本Launcher上支持的Android O新特性，并将研究内容发布到我的博客中。
+
+<p align="center">
+  <img src="picture/launcher3.gif"/>
+</p>
+
+*导入**Android O 8.0** 的版本的Launcher3到Android studio，可以直接导入studio研究源码。*
+
+关于Launcher3的介绍博客有以下：
+
+- [Launcher3导入Android Studio](http://)
