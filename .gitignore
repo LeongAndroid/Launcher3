@@ -1,0 +1,14 @@
+db_files
+*.iml
+.project
+.classpath
+.project.properties
+gen/
+tests/stress/gen/
+bin/
+.idea/
+.gradle/
+local.properties
+gradle/
+build/
+gradlew*

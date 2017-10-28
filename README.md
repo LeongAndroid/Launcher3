@@ -1,2 +1,3 @@
 # Launcher3
-Android O AOSP Launcher3
+导入Android O版本的Launcher3到Android studio，可以直接导入studio研究源码。
+后续我将研究此版本Launcher上支持的Android O新特性，并将研究内容发布到我的博客中。
