@@ -8,4 +8,4 @@
 
 关于Launcher3的介绍博客有以下：
 
-- [Launcher3导入Android Studio遇到的问题](http://)
+- [Launcher3导入Android Studio遇到的问题](http://www.jianshu.com/p/28b1d205b4e6)
