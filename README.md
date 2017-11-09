@@ -9,3 +9,6 @@
 关于Launcher3的介绍博客有以下：
 
 - [Launcher3导入Android Studio遇到的问题](http://www.jianshu.com/p/28b1d205b4e6)
+- [Android O Launcher3新特性（图标形状）](http://www.jianshu.com/p/20df6c156f3d)
+
+
