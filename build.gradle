@@ -29,21 +29,38 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.flags'
+        }
         debug {
             minifyEnabled false
         }
     }
-
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError false
+    }
     productFlavors {
+        leongandroid {
+            applicationId 'com.leongandroid.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+            buildConfigField 'Boolean', 'HASDRAWER', 'false'
+        }
+
         aosp {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
+            buildConfigField 'Boolean', 'HASDRAWER', 'true'
         }
 
         l3go {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
+            buildConfigField 'Boolean', 'HASDRAWER', 'true'
         }
+
     }
     sourceSets {
         main {
@@ -60,6 +77,14 @@ android {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
             manifest.srcFile "tests/AndroidManifest-common.xml"
+        }
+
+        leongandroid {
+            java.srcDirs = ['src_flags']
+            manifest.srcFile "AndroidManifest.xml"
+        }
+        leongandroidAndroidTest {
+            manifest.srcFile "tests/AndroidManifest.xml"
         }
 
         aosp {
@@ -82,6 +107,8 @@ android {
         l3goAndroidTest {
             manifest.srcFile "tests/AndroidManifest.xml"
         }
+
+
     }
 }
 
