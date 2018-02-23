@@ -674,4 +674,34 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return info;
     }
 
+    /// LeongAndroid add for
+    public static class LeongLazyShortcutsProvider extends Provider<List<Pair<ItemInfo, Object>>> {
+
+        private final Context mContext;
+        private final ArrayList<AppInfo> mPendingItems;
+
+        public LeongLazyShortcutsProvider(Context context, ArrayList<AppInfo> items) {
+            mContext = context;
+            mPendingItems = items;
+        }
+
+        /**
+         * This must be called on the background thread as this requires multiple calls to
+         * packageManager and icon cache.
+         */
+        @Override
+        public ArrayList<Pair<ItemInfo, Object>> get() {
+            Preconditions.assertNonUiThread();
+            ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
+            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
+            for (AppInfo pendingInfo : mPendingItems) {
+                LauncherActivityInfo activityInfo = launcherApps.resolveActivity(pendingInfo.getIntent(),pendingInfo.user);
+                PendingInstallShortcutInfo pendingInstallShortcutInfo = new PendingInstallShortcutInfo(activityInfo,mContext);
+                // Generate a shortcut info to add into the model
+                installQueue.add(pendingInstallShortcutInfo.getItemInfo());
+            }
+            return installQueue;
+        }
+    }
+
 }

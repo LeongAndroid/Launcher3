@@ -156,7 +156,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
-    protected PageIndicator mPageIndicator;
+    @Thunk int mPageIndicatorViewNoDrawerId;
+    public PageIndicator mPageIndicator;
+    public PageIndicator mPageIndicatorNoDrawer;
     // The viewport whether the pages are to be contained (the actual view may be larger than the
     // viewport)
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -206,6 +208,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.PagedView, defStyle, 0);
         mPageIndicatorViewId = a.getResourceId(R.styleable.PagedView_pageIndicator, -1);
+        mPageIndicatorViewNoDrawerId = a.getResourceId(R.styleable.PagedView_pageIndicatorNoDrawer, -1);
         a.recycle();
 
         setHapticFeedbackEnabled(false);
@@ -243,6 +246,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.setMarkersCount(getChildCount());
             mPageIndicator.setContentDescription(getPageIndicatorDescription());
+        }
+        if (mPageIndicatorViewNoDrawerId > -1) {
+            mPageIndicatorNoDrawer = (PageIndicator) parent.findViewById(mPageIndicatorViewNoDrawerId);
+            mPageIndicatorNoDrawer.setMarkersCount(getChildCount());
+            mPageIndicatorNoDrawer.setContentDescription(getPageIndicatorDescription());
         }
     }
 
@@ -313,7 +321,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     public PageIndicator getPageIndicator() {
-        return mPageIndicator;
+        if (BuildConfig.HASDRAWER) {
+            return mPageIndicator;
+        }else {
+            return mPageIndicatorNoDrawer;
+        }
     }
 
     /**
@@ -425,6 +437,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mPageIndicator.setContentDescription(getPageIndicatorDescription());
             if (!isReordering(false)) {
                 mPageIndicator.setActiveMarker(getNextPage());
+            }
+        }
+        if (mPageIndicatorNoDrawer != null) {
+            mPageIndicatorNoDrawer.setContentDescription(getPageIndicatorDescription());
+            if (!isReordering(false)) {
+                mPageIndicatorNoDrawer.setActiveMarker(getNextPage());
             }
         }
     }
@@ -913,6 +931,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mPageIndicator.addMarker();
         }
 
+        if (mPageIndicatorNoDrawer != null && !isReordering(false)) {
+            mPageIndicatorNoDrawer.addMarker();
+        }
+
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.
         updateFreescrollBounds();
@@ -931,6 +953,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
             mPageIndicator.removeMarker();
+        }
+        if (mPageIndicatorNoDrawer != null && !isReordering(false)) {
+            mPageIndicatorNoDrawer.removeMarker();
         }
     }
 
@@ -961,6 +986,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // add/remove pages
         if (mPageIndicator != null) {
             mPageIndicator.setMarkersCount(0);
+        }
+        if (mPageIndicatorNoDrawer != null) {
+            mPageIndicatorNoDrawer.setMarkersCount(0);
         }
 
         super.removeAllViewsInLayout();
@@ -1536,6 +1564,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                                 mSidePageHoverIndex = -1;
                                 if (mPageIndicator != null) {
                                     mPageIndicator.setActiveMarker(getNextPage());
+                                }
+                                if (mPageIndicatorNoDrawer != null) {
+                                    mPageIndicatorNoDrawer.setActiveMarker(getNextPage());
                                 }
                             }
                         };

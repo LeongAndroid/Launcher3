@@ -152,9 +152,14 @@ public class LauncherStateTransitionAnimation {
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }
         };
+
+        int animType = CIRCULAR_REVEAL;
+        if (BuildConfig.HASDRAWER) {
+            animType = PULLUP;
+        }
         // Only animate the search bar if animating from spring loaded mode back to all apps
         startAnimationToOverlay(
-                Workspace.State.NORMAL_HIDDEN, buttonView, toView, animated, PULLUP, cb);
+                Workspace.State.NORMAL_HIDDEN, buttonView, toView, animated, animType, cb);
     }
 
     /**
@@ -187,8 +192,12 @@ public class LauncherStateTransitionAnimation {
 
         if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED
                 || mAllAppsController.isTransitioning()) {
+            int animType = CIRCULAR_REVEAL;
+            if (BuildConfig.HASDRAWER) {
+                animType = PULLUP;
+            }
             startAnimationToWorkspaceFromAllApps(fromWorkspaceState, toWorkspaceState,
-                    animated, PULLUP, onCompleteRunnable);
+                    animated, animType, onCompleteRunnable);
         } else if (fromState == Launcher.State.WIDGETS ||
                 fromState == Launcher.State.WIDGETS_SPRING_LOADED) {
             startAnimationToWorkspaceFromWidgets(fromWorkspaceState, toWorkspaceState,
@@ -225,7 +234,7 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState,
                 animated, initialized, animation, layerViews);
         if (!animated || !initialized) {
-            if (toWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
+            if (BuildConfig.HASDRAWER && toWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
                 mAllAppsController.finishPullUp();
             }
             toView.setTranslationX(0.0f);
@@ -516,7 +525,7 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState,
                 animated, initialized, animation, layerViews);
         if (!animated || !initialized) {
-            if (fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
+            if (BuildConfig.HASDRAWER && fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
                 mAllAppsController.finishPullDown();
             }
             fromView.setVisibility(View.GONE);

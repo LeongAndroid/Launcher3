@@ -40,7 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            launcher:pageIndicator="@id/page_indicator" />
+            launcher:pageIndicator="@id/page_indicator"
+            launcher:pageIndicatorNoDrawer="@+id/page_indicator_no_drawer"/>
 
         <include layout="@layout/gradient_bg" />
 
@@ -58,6 +59,14 @@
 
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"
+            android:visibility="gone" />
+
+        <com.android.launcher3.pageindicators.PageIndicatorDots
+            android:id="@+id/page_indicator_no_drawer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:elevation="1dp"
             android:visibility="gone" />
 
         <include layout="@layout/widgets_view"

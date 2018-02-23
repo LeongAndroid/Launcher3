@@ -62,7 +62,7 @@ public abstract class BaseContainerView extends FrameLayout
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        if (this instanceof AllAppsContainerView) {
+        if (BuildConfig.HASDRAWER && this instanceof AllAppsContainerView) {
             mBaseDrawable = new ColorDrawable();
         } else {
             TypedArray a = context.obtainStyledAttributes(attrs,

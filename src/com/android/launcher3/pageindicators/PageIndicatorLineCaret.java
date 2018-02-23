@@ -18,6 +18,7 @@ import android.util.Property;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -156,7 +157,10 @@ public class PageIndicatorLineCaret extends PageIndicator {
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
         }
-
+        ///leongandroid add
+        if (!BuildConfig.HASDRAWER) {
+            return;
+        }
         // Compute and draw line rect.
         float progress = Utilities.boundToRange(((float) mCurrentScroll) / mTotalScroll, 0f, 1f);
         int availableWidth = canvas.getWidth();

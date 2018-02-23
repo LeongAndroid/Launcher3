@@ -58,7 +58,13 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     @Override
     protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return true;
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
+                || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
+            return true;
+        }
+        return BuildConfig.HASDRAWER;
     }
 
     /**

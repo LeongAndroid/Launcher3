@@ -28,6 +28,7 @@ import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
@@ -111,8 +112,12 @@ public class PageIndicatorDots extends PageIndicator {
         mCirclePaint.setStyle(Style.FILL);
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
         setOutlineProvider(new MyOutlineProver());
-
-        mActiveColor = Themes.getColorAccent(context);
+        /// leongandroid add
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            mActiveColor = context.getColor(R.color.page_indicator_no_drawer);
+        }else {
+            mActiveColor = Themes.getColorAccent(context);
+        }
         mInActiveColor = Themes.getAttrColor(context, android.R.attr.colorControlHighlight);
 
         mIsRtl = Utilities.isRtl(getResources());
@@ -125,7 +130,10 @@ public class PageIndicatorDots extends PageIndicator {
                 currentScroll = totalScroll - currentScroll;
             }
             int scrollPerPage = totalScroll / (mNumPages - 1);
-            int pageToLeft = currentScroll / scrollPerPage;
+            int pageToLeft = 0;
+            if (scrollPerPage != 0) {
+                pageToLeft = currentScroll / scrollPerPage;
+            }
             int pageToLeftScroll = pageToLeft * scrollPerPage;
             int pageToRightScroll = pageToLeftScroll + scrollPerPage;
 

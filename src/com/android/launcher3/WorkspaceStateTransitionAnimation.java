@@ -273,7 +273,7 @@ public class WorkspaceStateTransitionAnimation {
         float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
                 1.0f : 0f;
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
-                states.stateIsNormalHidden) ? 1f : 0f;
+                (BuildConfig.HASDRAWER && states.stateIsNormalHidden)) ? 1f : 0f;
         float finalQsbAlpha = (states.stateIsNormal || states.stateIsNormalHidden) ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
@@ -311,7 +311,7 @@ public class WorkspaceStateTransitionAnimation {
             if (states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
             } else if(states.stateIsNormalHidden) {
-                finalAlpha = (i == mWorkspace.getNextPage()) ? 1 : 0;
+                finalAlpha = (BuildConfig.HASDRAWER && i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
             } else {
@@ -388,7 +388,9 @@ public class WorkspaceStateTransitionAnimation {
             // For animation optimization, we may need to provide the Launcher transition
             // with a set of views on which to force build and manage layers in certain scenarios.
             layerViews.addView(mLauncher.getHotseat());
-            layerViews.addView(mWorkspace.getPageIndicator());
+            if (BuildConfig.HASDRAWER) {
+                layerViews.addView(mWorkspace.getPageIndicator());
+            }
 
             Animator hotseatAlpha = mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha);
             if (states.workspaceToOverview) {
@@ -407,7 +409,9 @@ public class WorkspaceStateTransitionAnimation {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
+                    if (BuildConfig.HASDRAWER) {
+                        mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
+                    }
                 }
 
                 @Override
@@ -423,7 +427,9 @@ public class WorkspaceStateTransitionAnimation {
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
-            mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
+            if (BuildConfig.HASDRAWER) {
+                mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
+            }
 
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();
             mWorkspace.updateCustomContentVisibility();

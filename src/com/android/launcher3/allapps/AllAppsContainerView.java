@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -103,14 +104,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     protected void updateBackground(
             int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            getRevealView().setBackground(new InsetDrawable(mBaseDrawable,
-                    paddingLeft, paddingTop, paddingRight, paddingBottom));
-            getContentView().setBackground(
-                    new InsetDrawable(new ColorDrawable(Color.TRANSPARENT),
-                            paddingLeft, paddingTop, paddingRight, paddingBottom));
-        } else {
-            getRevealView().setBackground(mBaseDrawable);
+        if (BuildConfig.HASDRAWER) {
+            if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                getRevealView().setBackground(new InsetDrawable(mBaseDrawable,
+                        paddingLeft, paddingTop, paddingRight, paddingBottom));
+                getContentView().setBackground(
+                        new InsetDrawable(new ColorDrawable(Color.TRANSPARENT),
+                                paddingLeft, paddingTop, paddingRight, paddingBottom));
+            } else {
+                getRevealView().setBackground(mBaseDrawable);
+            }
+        }else {
+            super.updateBackground(paddingLeft, paddingTop, paddingRight, paddingBottom);
         }
     }
 
@@ -229,9 +234,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.preMeasureViews(mAdapter);
         mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
 
-        getRevealView().setVisibility(View.VISIBLE);
-        getContentView().setVisibility(View.VISIBLE);
-        getContentView().setBackground(null);
+        if (BuildConfig.HASDRAWER) {
+            getRevealView().setVisibility(View.VISIBLE);
+            getContentView().setVisibility(View.VISIBLE);
+            getContentView().setBackground(null);
+        }
     }
 
     public SearchUiManager getSearchUiManager() {
@@ -249,10 +256,23 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Update the number of items in the grid before we measure the view
         grid.updateAppsViewNumCols();
 
-        if (mNumAppsPerRow != grid.inv.numColumns ||
-                mNumPredictedAppsPerRow != grid.inv.numColumns) {
-            mNumAppsPerRow = grid.inv.numColumns;
-            mNumPredictedAppsPerRow = grid.inv.numColumns;
+        if (BuildConfig.HASDRAWER) {
+            if (mNumAppsPerRow != grid.inv.numColumns ||
+                    mNumPredictedAppsPerRow != grid.inv.numColumns) {
+                mNumAppsPerRow = grid.inv.numColumns;
+                mNumPredictedAppsPerRow = grid.inv.numColumns;
+
+                mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
+                mAdapter.setNumAppsPerRow(mNumAppsPerRow);
+                mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
+            }
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+        if (mNumAppsPerRow != grid.allAppsNumCols ||
+                mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
+            mNumAppsPerRow = grid.allAppsNumCols;
+            mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
 
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);

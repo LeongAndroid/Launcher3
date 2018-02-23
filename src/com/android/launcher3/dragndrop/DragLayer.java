@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.ExtendedEditText;
@@ -243,7 +244,7 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (mAllAppsController.onControllerInterceptTouchEvent(ev)) {
+        if (BuildConfig.HASDRAWER && mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
         }

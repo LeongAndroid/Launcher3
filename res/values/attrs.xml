@@ -60,7 +60,8 @@
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
         <!-- The page indicator for this workspace -->
-        <attr name="pageIndicator" format="reference" />
+        <attr name="pageIndicator" format="reference"/>
+        <attr name="pageIndicatorNoDrawer" format="reference" />
     </declare-styleable>
 
     <!-- BaseContainerView specific attributes. These attributes are used to customize

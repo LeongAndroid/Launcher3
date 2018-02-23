@@ -545,7 +545,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mWorkspace = workspace;
         mHotseat.bringToFront();
         mCaretController = new AllAppsCaretController(
-                mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
+                mWorkspace.mPageIndicator.getCaretDrawable(), mLauncher);
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
         mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
         mSearchSpring = mAppsView.getSearchUiManager().getSpringForFling();

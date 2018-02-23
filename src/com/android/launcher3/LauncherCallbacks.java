@@ -70,6 +70,7 @@ public interface LauncherCallbacks {
     void onLauncherProviderChange();
     void finishBindingItems(final boolean upgradePath);
     void bindAllApplications(ArrayList<AppInfo> apps);
+    void bindAppsAddedOrUpdated(final ArrayList<AppInfo> apps);
     void onInteractionBegin();
     void onInteractionEnd();
 

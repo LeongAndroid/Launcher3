@@ -1,16 +1,32 @@
-package com.android.launcher3.testing;
+/*
+ * Copyright (C) LeongAndroid
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.leongandroid;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BuildConfig;
+import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.R;
 import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.io.FileDescriptor;
@@ -18,76 +34,121 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class represents a very trivial LauncherExtension. It primarily serves as a simple
- * class to exercise the LauncherOverlay interface.
- */
-public class LauncherExtension extends Launcher {
-
-    //------ Activity methods -------//
+public class LeongAndroidLauncher extends Launcher {
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        setLauncherCallbacks(new LauncherExtensionCallbacks());
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLauncherCallbacks(new LeongAndroidLauncherCallbacks());
     }
 
-    public class LauncherExtensionCallbacks implements LauncherCallbacks {
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void startBinding() {
+        super.startBinding();
+    }
+
+    @Override
+    public void finishBindingItems() {
+        super.finishBindingItems();
+    }
+
+    private class LeongAndroidLauncherCallbacks implements LauncherCallbacks {
+        private ArrayList<AppInfo> mApps;
         @Override
         public void preOnCreate() {
+
         }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
+
         }
 
         @Override
         public void preOnResume() {
+            findViewById(R.id.page_indicator_no_drawer).setVisibility(BuildConfig.HASDRAWER ? View.GONE : View.VISIBLE);
+            if (mAllAppsButton != null) {
+                mAllAppsButton.setVisibility(BuildConfig.HASDRAWER ? View.VISIBLE : View.GONE);
+            }
         }
 
         @Override
         public void onResume() {
+
         }
 
         @Override
         public void onStart() {
+
         }
 
         @Override
         public void onStop() {
+
         }
 
         @Override
         public void onPause() {
+
         }
 
         @Override
         public void onDestroy() {
+
         }
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
+
         }
 
         @Override
         public void onPostCreate(Bundle savedInstanceState) {
+
         }
 
         @Override
         public void onNewIntent(Intent intent) {
+
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         }
 
         @Override
-        public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                int[] grantResults) {
+        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
         }
 
         @Override
         public void onWindowFocusChanged(boolean hasFocus) {
+
+        }
+
+        @Override
+        public void onAttachedToWindow() {
+
+        }
+
+        @Override
+        public void onDetachedFromWindow() {
+
         }
 
         @Override
@@ -97,10 +158,12 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args) {
+
         }
 
         @Override
         public void onHomeIntent() {
+
         }
 
         @Override
@@ -110,76 +173,67 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void onTrimMemory(int level) {
+
         }
 
         @Override
         public void onLauncherProviderChange() {
+
         }
 
         @Override
         public void finishBindingItems(boolean upgradePath) {
+
         }
 
         @Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
+            mApps = apps;
+            boolean hasDrawer = BuildConfig.HASDRAWER;
+            if (!hasDrawer) {
+                LauncherAppState.getInstance(LeongAndroidLauncher.this).getModel().
+                        addAndBindAddedWorkspaceItems(new InstallShortcutReceiver.LeongLazyShortcutsProvider(getApplicationContext(), mApps));
+            }
         }
 
         @Override
         public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps) {
+            if (apps != null && apps.size() > 0) {
+                if (!BuildConfig.HASDRAWER) {
+                    LauncherAppState.getInstance(LeongAndroidLauncher.this).getModel().
+                            addAndBindAddedWorkspaceItems(new InstallShortcutReceiver.LeongLazyShortcutsProvider(getApplicationContext(), apps));
+                }
+            }
+        }
+
+        @Override
+        public void onInteractionBegin() {
+
+        }
+
+        @Override
+        public void onInteractionEnd() {
 
         }
 
         @Override
         public void onWorkspaceLockedChanged() {
+
         }
 
         @Override
-        public void onInteractionBegin() {
-        }
-
-        @Override
-        public void onInteractionEnd() {
-        }
-
-        @Override
-        public boolean startSearch(String initialQuery, boolean selectInitialQuery,
-                Bundle appSearchData) {
+        public boolean startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData) {
             return false;
         }
 
-        CustomContentCallbacks mCustomContentCallbacks = new CustomContentCallbacks() {
-
-            // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-            // by a onResume or by scrolling otherwise.
-            public void onShow(boolean fromResume) {
-            }
-
-            // Custom content is completely hidden
-            public void onHide() {
-            }
-
-            // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-            public void onScrollProgressChanged(float progress) {
-
-            }
-
-            // Indicates whether the user is allowed to scroll away from the custom content.
-            public boolean isScrollingAllowed() {
-                return true;
-            }
-
-        };
-
         @Override
         public boolean hasCustomContentToLeft() {
-            return true;
+            return false;
         }
 
         @Override
         public void populateCustomContentContainer() {
-            FrameLayout customContent = new FrameLayout(LauncherExtension.this);
-            customContent.setBackgroundColor(Color.GRAY);
-            addToCustomContentPage(customContent, mCustomContentCallbacks, "");
+
         }
 
         @Override
@@ -189,7 +243,7 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public Bundle getAdditionalSearchWidgetOptions() {
-            return new Bundle();
+            return null;
         }
 
         @Override
@@ -199,26 +253,18 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public boolean hasSettings() {
-            return false;
+            return true;
         }
 
         @Override
         public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-            // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
-            return new ArrayList<>();
+            return null;
         }
 
         @Override
         public int getSearchBarHeight() {
-            return SEARCH_BAR_HEIGHT_NORMAL;
-        }
-
-        @Override
-        public void onAttachedToWindow() {
-        }
-
-        @Override
-        public void onDetachedFromWindow() {
+            return 0;
         }
     }
+
 }

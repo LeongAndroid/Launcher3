@@ -40,4 +40,6 @@
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
+
+    <color name="page_indicator_no_drawer">#FFFFFF</color> <!-- Teal A400 -->
 </resources>

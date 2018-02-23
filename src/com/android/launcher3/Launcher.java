@@ -241,7 +241,7 @@ public class Launcher extends BaseActivity
     @Thunk Hotseat mHotseat;
     private ViewGroup mOverviewPanel;
 
-    private View mAllAppsButton;
+    protected View mAllAppsButton;
     private View mWidgetsButton;
 
     private DropTargetBar mDropTargetBar;
@@ -529,7 +529,7 @@ public class Launcher extends BaseActivity
         if (Utilities.ATLEAST_NOUGAT) {
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
-            mWorkspace.getPageIndicator().updateColor(mExtractedColors);
+            mWorkspace.mPageIndicator.updateColor(mExtractedColors);
         }
     }
 
@@ -1313,8 +1313,9 @@ public class Launcher extends BaseActivity
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-
+        if (BuildConfig.HASDRAWER) {
+            mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
+        }
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.addWeightWatcher(this);
         }
@@ -1367,7 +1368,11 @@ public class Launcher extends BaseActivity
     }
 
     public View getStartViewForAllAppsRevealAnimation() {
-        return FeatureFlags.NO_ALL_APPS_ICON ? mWorkspace.getPageIndicator() : mAllAppsButton;
+        if (BuildConfig.HASDRAWER) {
+            return FeatureFlags.NO_ALL_APPS_ICON ? mWorkspace.getPageIndicator() : mAllAppsButton;
+        }else {
+            return null;
+        }
     }
 
     public View getWidgetsButton() {
@@ -2281,7 +2286,9 @@ public class Launcher extends BaseActivity
             }
         } else if ((v instanceof PageIndicator) ||
             (v == mAllAppsButton && mAllAppsButton != null)) {
-            onClickAllAppsButton(v);
+            if (BuildConfig.HASDRAWER) {
+                onClickAllAppsButton(v);
+            }
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -2845,7 +2852,7 @@ public class Launcher extends BaseActivity
                     Workspace.State.NORMAL, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
-            if (mAllAppsButton != null) {
+            if (mAllAppsButton != null && BuildConfig.HASDRAWER) {
                 mAllAppsButton.requestFocus();
             }
         }
@@ -3710,6 +3717,11 @@ public class Launcher extends BaseActivity
         if (mAppsView != null) {
             mAppsView.addOrUpdateApps(apps);
         }
+
+        ///leongandroid add
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.bindAppsAddedOrUpdated(apps);
+        }
     }
 
     @Override
@@ -3895,8 +3907,12 @@ public class Launcher extends BaseActivity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        UserManagerCompat um = UserManagerCompat.getInstance(this);
-        return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false) && !um.isDemoUser();
+        if (BuildConfig.HASDRAWER) {
+            UserManagerCompat um = UserManagerCompat.getInstance(this);
+            return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false) && !um.isDemoUser();
+        }else {
+            return false;
+        }
     }
 
     protected void moveWorkspaceToDefaultScreen() {

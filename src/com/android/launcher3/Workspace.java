@@ -522,6 +522,7 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
+        mPageIndicatorNoDrawer.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
     }
 
     private int getDefaultPage() {
@@ -1372,6 +1373,9 @@ public class Workspace extends PagedView
         if (mPageIndicator != null) {
             mPageIndicator.setScroll(getScrollX(), computeMaxScrollX());
         }
+        if (mPageIndicatorNoDrawer != null) {
+            mPageIndicatorNoDrawer.setScroll(getScrollX(), computeMaxScrollX());
+        }
     }
 
     @Override
@@ -1498,6 +1502,7 @@ public class Workspace extends PagedView
         // Skip the page indicator movement in the vertical bar layout
         if (direction != Direction.Y || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             property.set(mPageIndicator, translation);
+            property.set(mPageIndicatorNoDrawer, translation);
         }
         property.set(mLauncher.getHotseat(), translation);
         setHotseatAlphaAtIndex(alpha, direction.ordinal());
@@ -1510,6 +1515,7 @@ public class Workspace extends PagedView
 
         mLauncher.getHotseat().setAlpha(hotseatAlpha);
         mPageIndicator.setAlpha(pageIndicatorAlpha);
+        mPageIndicatorNoDrawer.setAlpha(pageIndicatorAlpha);
     }
 
     public ValueAnimator createHotseatAlphaAnimator(float finalValue) {
@@ -1713,6 +1719,9 @@ public class Workspace extends PagedView
 
         if (mPageIndicator != null) {
             mPageIndicator.setTranslationX(translationX);
+        }
+        if (mPageIndicatorNoDrawer != null) {
+            mPageIndicatorNoDrawer.setTranslationX(translationX);
         }
 
         if (mCustomContentCallbacks != null) {

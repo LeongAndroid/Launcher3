@@ -697,6 +697,26 @@ public class DeviceProfile {
             pageIndicator.setLayoutParams(lp);
         }
 
+        // for no drawer pageindicator
+        View pageIndicatorNoDrawer = launcher.findViewById(R.id.page_indicator_no_drawer);
+        if (pageIndicatorNoDrawer != null) {
+            lp = (FrameLayout.LayoutParams) pageIndicatorNoDrawer.getLayoutParams();
+            if (isVerticalBarLayout()) {
+                if (mInsets.left > 0) {
+                    lp.leftMargin = mInsets.left;
+                } else {
+                    lp.leftMargin = pageIndicatorLandWorkspaceOffsetPx;
+                }
+                lp.bottomMargin = workspacePadding.bottom;
+            } else {
+                // Put the page indicators above the hotseat
+                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+                lp.height = pageIndicatorSizePx;
+                lp.bottomMargin = hotseatBarSizePx + mInsets.bottom;
+            }
+            pageIndicatorNoDrawer.setLayoutParams(lp);
+        }
+
         // Layout the Overview Mode
         ViewGroup overviewMode = launcher.getOverviewPanel();
         if (overviewMode != null) {
