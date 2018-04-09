@@ -15,12 +15,15 @@
  */
 package com.android.launcher3.model;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.Pair;
 import com.android.launcher3.AllAppsList;
@@ -73,10 +76,14 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         // called.
         ArrayList<Long> workspaceScreens = LauncherModel.loadWorkspaceScreensDb(context);
         synchronized(dataModel) {
-
             List<ItemInfo> filteredItems = new ArrayList<>();
             for (Pair<ItemInfo, Object> entry : workspaceApps) {
                 ItemInfo item = entry.first;
+                if (item.getTargetComponent() != null) {
+                    if (!isMainLauncherActivity(context, item.getTargetComponent())) {
+                        continue;
+                    }
+                }
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                         item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
@@ -167,6 +174,25 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             userFolderInfo.applyPendingState(getModelWriter());
         }
     }
+
+    private boolean isMainLauncherActivity(Context context, ComponentName componentName) {
+        Intent localIntent = new Intent("android.intent.action.MAIN", null);
+        localIntent.addCategory("android.intent.category.LAUNCHER");
+        localIntent.setPackage(componentName.getPackageName());
+        List<ResolveInfo> appList = context.getPackageManager().queryIntentActivities(localIntent, 0);
+        if (appList != null) {
+            for (int i = 0; i < appList.size(); i++) {
+                ResolveInfo resolveInfo = appList.get(i);
+                String cls = resolveInfo.activityInfo.name;
+                if (componentName.getClassName() != null && componentName.getClassName().equals(cls)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 
     protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) {
         LauncherModel.updateWorkspaceScreenOrder(context, workspaceScreens);
