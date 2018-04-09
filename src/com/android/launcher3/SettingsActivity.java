@@ -107,6 +107,10 @@ public class SettingsActivity extends Activity {
                 mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
             }
 
+            setIconShapeOverride();
+        }
+
+        private void setIconShapeOverride() {
             Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
             if (iconShapeOverride != null) {
                 if (IconShapeOverride.isSupported(getActivity())) {
@@ -115,6 +119,12 @@ public class SettingsActivity extends Activity {
                     getPreferenceScreen().removePreference(iconShapeOverride);
                 }
             }
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            setIconShapeOverride();
         }
 
         @Override
