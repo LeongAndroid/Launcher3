@@ -259,6 +259,9 @@ public class DragLayer extends InsettableFrameLayout {
             mActiveController = mPinchListener;
             return true;
         }
+        /// resolve drag WidgetsBottomSheet icon into workspace issue.
+        /// 解决从WidgetsBottomSheet界面拖动shorcut到桌面的时候，图标停在workspace和hotseat之间的区域。
+        mActiveController = mDragController;
         return false;
     }
 
